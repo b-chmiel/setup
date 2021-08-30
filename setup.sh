@@ -17,9 +17,10 @@ function install_apt_pkgs() {
 }
 
 function install_wine() {
-	sudo apt install -y  wine winetricks libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio 
+	sudo apt install -y libopencv-dev
+	sudo apt install -y wine winetricks libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio winbind
 	sudo winetricks --self-update
-	winetricks -q allcodecs
+	winetricks -q allcodecs --force
 }
 
 function install_dotnet_sdk() {
@@ -72,6 +73,32 @@ function fonts_setup() {
 	popd
 }
 
+function gestures_setup() {
+	# gestures package
+	sudo gpasswd -a $USER input
+	sudo apt install -y wmctrl xdotool libinput-tools
+	mkdir -p $HOME/Documents/Programs
+	pushd $HOME/Documents/Programs
+		git clone https://github.com/bulletmark/libinput-gestures.git
+		pushd libinput-gestures
+			sudo ./libinput-gestures-setup install
+		popd
+	popd
+
+	libinput-gestures-setup autostart start
+
+	#gtk gui for settings
+	sudo apt install -y python3 python3-gi python-gobject meson xdotool libinput-tools gettext
+	pushd $HOME/Documents/Programs
+		git clone https://gitlab.com/cunidev/gestures
+		pushd gestures
+			meson build --prefix=/usr
+			ninja -C build
+			sudo ninja -C build install
+		popd
+	popd
+}
+
 function main() {
 	gnome_setup
 
@@ -82,6 +109,7 @@ function main() {
 	install_wine
 	shell_setup
 	fonts_setup
+	gestures_setup
 }
 
 main
