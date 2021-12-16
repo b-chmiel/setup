@@ -2,12 +2,11 @@
 
 ## BEFORE CHROOT
 loadkeys pl
-
 timedatectl set-ntp true
 
 # fdisk partition disks (swap, /, /boot, efi stuff) according to https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition
 
-pacstrap /mnt base linux-lts linux-firmware gnome networkmanager vim grub neovim curl ffmpeg openssh-server valgrind openjdk-11-jre-headless htop which neofetch gnome-tweaks git firefox vlc remmina net-tools qemu-kvm bridge-utils ncdu tree gnupg2 docker docker-compose fish abcde exfat-fuse exfat-utils thunderbird python3-pip python3-virtualenv httpie
+pacstrap /mnt base linux-lts linux-firmware gnome networkmanager grub neovim curl ffmpeg openssh-server valgrind openjdk-11-jre-headless htop which neofetch gnome-tweaks git firefox vlc net-tools qemu-kvm bridge-utils ncdu tree gnupg2 docker docker-compose zsh abcde exfat-fuse exfat-utils thunderbird python3-pip python3-virtualenv httpie
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
@@ -19,7 +18,7 @@ arch-chroot /mnt /bin/bash -e <<EOF
 	echo "KEYMAP=pl" >> /etc/vconsole.conf
 	echo "Vostro-3578" >> /etc/hostname
 	mkinitcpio -P
-	useradd -m -g users -G wheel -s /usr/bin/fish incvis
+	useradd -m -g users -G wheel -s /usr/bin/zsh incvis
 	systemctl enable NetworkManager
 	systemctl enable gdm
 EOF
@@ -36,4 +35,4 @@ EOF
 #mkinitcpio -P
 #passwd incvis
 
-reboot
+#reboot
